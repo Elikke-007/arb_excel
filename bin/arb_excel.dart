@@ -20,9 +20,14 @@ void main(List<String> args) {
   // parse.addOption('out', abbr: 'o', help: 'Specify the output directory');
   for (var command in _kCommands.keys) {
     final newCommand = parser.addCommand(command);
-    newCommand.addOption('input',abbr:'i',help:'Input file or directory');
-    newCommand.addOption('output',abbr:'o',help:'Output directory');
-    newCommand.addOption('default',abbr:'d',help:'Default language',defaultsTo: 'en');
+    newCommand.addOption('input', abbr: 'i', help: 'Input file or directory');
+    newCommand.addOption('output', abbr: 'o', help: 'Output directory');
+    newCommand.addOption(
+      'default',
+      abbr: 'd',
+      help: 'Default language',
+      defaultsTo: 'en',
+    );
   }
   // parse.addOption(
   //   'out',
@@ -32,12 +37,15 @@ void main(List<String> args) {
 
   final flags = parser.parse(args);
   switch (flags.command?.name) {
+    // 创建 excel 模板文件
     case 'new':
       _handleNew(flags.command!);
       return;
+    // 根据 arb 文件路径生成 excel 文件
     case 'excel':
       _handleExcel(flags.command!);
       return;
+    // 根据 excel 文件路径生成 arb 文件
     case 'arb':
       _handleArb(flags.command!);
       return;
@@ -78,7 +86,7 @@ void _handleArb(ArgResults command) {
   final String isDefault = command['default'];
   stdout.writeln('Generate ARB from: $input');
   final data = parseExcel(filename: input);
-  writeARB(output, data,isDefault);
+  writeARB(output, data, isDefault);
   exit(0);
 }
 
