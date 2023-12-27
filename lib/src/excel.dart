@@ -46,9 +46,9 @@ Translation parseExcel({
     final placeholders = row[_kColPlaceholders]?.value?.toString();
     final item = ARBItem(
       category: row[_kColCategory]?.value?.toString(),
-      text: row[_kColText]?.value?.toString() ?? '',
+      key: row[_kColText]?.value?.toString() ?? '',
       description:
-          row[_kColDescription]?.value?.toString().replaceAll('\n', '\\n'),
+      row[_kColDescription]?.value?.toString().replaceAll('\n', '\\n'),
       placeholders: placeholders,
       translations: {},
     );
@@ -70,24 +70,24 @@ Translation parseExcel({
 }
 
 /// Writes a Excel file, includes all translations.
-void writeExcel(String filePath, Translation data) {
+void writeExcel(String filename, Translation data) {
   final excel = Excel.createExcel();
   //library creates one sheet by default
-  final sheetName = excel.sheets.keys.first;
-  final sheet = excel[sheetName];
+  final sheetname = excel.sheets.keys.first;
+  final sheet = excel[sheetname];
   final headerRow = ['category', 'text', 'description','placeholders', ...data.languages];
   sheet.appendRow(headerRow);
   for (final item in data.items) {
     final row = [
       item.category ?? '',
-      item.text,
+      item.key,
       item.description ?? '',
       item.placeholders ?? '',
       ...data.languages.map((e) => item.translations[e] ?? '')
     ];
     sheet.appendRow(row);
   }
-  // 隐藏第三列
+  // 隐藏第 4 列
   sheet.setColWidth(3, 0);
   final bytes = excel.save();
   if (bytes == null) {
@@ -97,9 +97,9 @@ void writeExcel(String filePath, Translation data) {
         ''');
     return;
   }
-  File output = File(filePath);
-  if(!output.existsSync()) {
-    output.createSync(recursive:true);
+  File output = File(filename);
+  if(!output.existsSync()){
+    output.createSync(recursive: true);
   }
   output.writeAsBytesSync(bytes);
 }
